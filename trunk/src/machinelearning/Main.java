@@ -8,7 +8,7 @@ package machinelearning;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.List;
 import machinelearning.data.DataSet;
 import machinelearning.learningalgo.LearningAlgo;
 import machinelearning.learningalgo.NaiveBayes;
@@ -36,7 +36,7 @@ public class Main {
 
         //Initialize learning algorithms
         LearningAlgo[] algos = new LearningAlgo[] {
-          new NaiveBayes(ds.attributes),
+          new NaiveBayes(ds.attributes, 0, 0),
         };
 
         //AKBAR: do cross fold - langsung folding, learn dan tes di sini aja deh
@@ -46,10 +46,11 @@ public class Main {
         //do training and test
         //AKBAR : atur di sini urutan training dan testnya
         for(LearningAlgo algo : algos) {
-            ArrayList<Object[]> learnDataSet    = null;
-            ArrayList<Object[]> testDataSet     = null;
+            List<Object[]> learnDataSet    = ds.data.subList(0, ds.data.size() - 100);
+            List<Object[]> testDataSet     = ds.data.subList(ds.data.size() - 100, ds.data.size());
             algo.learn(learnDataSet);
-            algo.test(testDataSet);
+            float res = algo.test(learnDataSet);
+            int i = 0; //just dummy line so that I can put a breakpoint here to check res
         }
     }
 
