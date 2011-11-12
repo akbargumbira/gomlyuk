@@ -23,4 +23,11 @@ public class NominalDataAttribute extends DataAttribute {
         return value;
     }
 
+    public int valueIndex(String value) {
+        for(int i = 0; i < values.length; ++i) {
+            if(value.equals(values[i])) return i;
+        }
+
+        return -1;
+    }
 }
