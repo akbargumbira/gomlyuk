@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import machinelearning.data.DataSet;
+import machinelearning.learningalgo.ID3;
 import machinelearning.learningalgo.LearningAlgo;
 import machinelearning.learningalgo.NaiveBayes;
 
@@ -37,12 +38,18 @@ public class Main {
 
         //Initialize learning algorithms
         LearningAlgo[] algos = new LearningAlgo[] {
-          new NaiveBayes(ds.attributes, 0, 0),
+          new NaiveBayes(ds.attributes, 0, 0), new ID3(ds.attributes, 0)
         };
+        
+        /*
+         * Tes ID3
+         */
+//        List<Object[]> dataSet = ds.data.subList(0, ds.data.size());
+//        algos[1].learn(dataSet);
 
         //Create Crossfold Data
         //learnDataSet[0],learnDataSet[1], ..., learnDataSet[n], relate to testDataSet[0],testDataSet[0],...,testDataSet[n] respectively
-        int numFold = 5;
+        int numFold = 2;
         int totalData  = ds.data.size();
         int totalDataPerFold = totalData/numFold;
         
@@ -53,9 +60,9 @@ public class Main {
         //Folding data :
         for (int i=0; i < numFold; ++i) {
             if (i != (numFold-1) )
-                foldedDataSets.add(i, ds.data.subList(i*totalDataPerFold, (i*totalDataPerFold)+totalDataPerFold-1));
+                foldedDataSets.add(i, ds.data.subList(i*totalDataPerFold, (i*totalDataPerFold)+totalDataPerFold));
             else
-                foldedDataSets.add(i, ds.data.subList(i*totalDataPerFold, ds.data.size()));
+                foldedDataSets.add(i, ds.data.subList(i*totalDataPerFold, totalData));
         }
         
         for (int i=0; i< numFold; ++i)
@@ -74,20 +81,20 @@ public class Main {
         }
 
         
-        float totalAccuracy = 0;
         for(LearningAlgo algo : algos) {
+            System.out.println("Algoritma : "+algo.getName());
+            float totalAccuracy = 0;
             for (int i=0 ; i < numFold; ++i) {
-                System.out.println("Learn Data Set Size: "+learnDataSets.get(i).size());
-                System.out.println("Test Data Set Size: "+testDataSets.get(i).size());
+//                System.out.println("Learn Data Set Size: "+learnDataSets.get(i).size());
+//                System.out.println("Test Data Set Size: "+testDataSets.get(i).size());
                 algo.learn(learnDataSets.get(i));
                 float res = algo.test(testDataSets.get(i));
                 totalAccuracy += res;
-                System.out.println("Akurasi :"+res+"\n");
+//                System.out.println("Akurasi :"+res+"\n");
             }
+            float averageAccuracy = totalAccuracy/(float)numFold;
+            System.out.println("Average Akurasi Algoritma: "+algo.getName()+" = "+averageAccuracy);
         }
-        
-        float averageAccuracy = totalAccuracy/(float)numFold;
-        System.out.println("Akurasi rata-rata : "+averageAccuracy);
     }
 
 }
