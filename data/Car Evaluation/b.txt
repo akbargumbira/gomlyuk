@@ -1,10 +1,10 @@
 nom vhigh,high,med,low
 nom vhigh,high,med,low
-nom 2,3,4,5,more
+nom 2,3,4,5more
 nom 2,4,more
 nom small,med,big
 nom low,med,high
-
+nom unacc,acc,good,vgood
 @
 vhigh,vhigh,2,2,small,low,unacc
 vhigh,vhigh,2,2,small,med,unacc

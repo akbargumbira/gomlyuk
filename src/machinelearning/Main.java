@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import machinelearning.data.DataSet;
-import machinelearning.learningalgo.ID3;
 import machinelearning.learningalgo.LearningAlgo;
 import machinelearning.learningalgo.NaiveBayes;
 
@@ -26,7 +25,7 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
         //parameters
-        String filename = "a.txt";
+        String filename = "e.txt";
 
         //variables
         DataSet ds = new DataSet();
@@ -38,7 +37,8 @@ public class Main {
 
         //Initialize learning algorithms
         LearningAlgo[] algos = new LearningAlgo[] {
-          new NaiveBayes(ds.attributes, 0, 0), new ID3(ds.attributes, 0)
+          new NaiveBayes(ds.attributes, 17, 0.4f),
+          //new ID3(ds.attributes, 0)
         };
         
         /*
@@ -82,15 +82,12 @@ public class Main {
 
         
         for(LearningAlgo algo : algos) {
-            System.out.println("Algoritma : "+algo.getName());
             float totalAccuracy = 0;
             for (int i=0 ; i < numFold; ++i) {
-//                System.out.println("Learn Data Set Size: "+learnDataSets.get(i).size());
-//                System.out.println("Test Data Set Size: "+testDataSets.get(i).size());
+                System.out.println("Algoritma : "+algo.getName() + " - Fold: " + i);
                 algo.learn(learnDataSets.get(i));
                 float res = algo.test(testDataSets.get(i));
                 totalAccuracy += res;
-//                System.out.println("Akurasi :"+res+"\n");
             }
             float averageAccuracy = totalAccuracy/(float)numFold;
             System.out.println("Average Akurasi Algoritma: "+algo.getName()+" = "+averageAccuracy);
