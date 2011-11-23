@@ -1,0 +1,6 @@
+data - target attr idx
+
+a.txt 0	
+b.txt 6	
+d.txt 8
+e.txt 17
