@@ -137,6 +137,7 @@ public class ID3 extends LearningAlgo {
     public void makeTree(Node a_node, ArrayList<Integer> notAllowedChosenIdx) {
 //        System.out.println("NotAllowedChosenIdx " +notAllowedChosenIdx.toString());
         int bestAttribute = bestAttribute(a_node.getDataSetNode(), notAllowedChosenIdx);
+        
 //        System.out.println("Best Attribute Chosen : "+bestAttribute);
         a_node.setAttributeIndex(bestAttribute);
         
@@ -172,19 +173,28 @@ public class ID3 extends LearningAlgo {
                 }
                 childs[i] = thisNode;
             } else {
-                int bestAttrib = bestAttribute(thisDataSet, notAllowedChosenIdx);
-                thisNode.setAttributeIndex(bestAttrib);
-                thisNode.setParent(a_node);
-                thisNode.setDataSetNode(thisDataSet);
-                thisNode.setIsLeaf(Boolean.FALSE);
-                thisNode.setEntropyNode(entropyThisDataSet);
-                childs[i] = thisNode;
+                if (notAllowedChosenIdxNew.size() != (_attributes.size()-1)) { //Kalo udah sama berarti atribut udah kepilih semua
+                    int bestAttrib = bestAttribute(thisDataSet, notAllowedChosenIdx);
+                    thisNode.setAttributeIndex(bestAttrib);
+                    thisNode.setParent(a_node);
+                    thisNode.setDataSetNode(thisDataSet);
+                    thisNode.setIsLeaf(Boolean.TRUE);
+                    thisNode.setEntropyNode(entropyThisDataSet);
+                    childs[i] = thisNode;
+                } else {
+                    thisNode.setParent(a_node);
+                    thisNode.setDataSetNode(thisDataSet);
+                    thisNode.setIsLeaf(Boolean.TRUE);
+                    thisNode.setEntropyNode(entropyThisDataSet);
+                    thisNode.setClassIdx(DEFAULT_CLASS);
+                    childs[i] = thisNode;
+                }
             }
         }
         a_node.setChild(childs);
         
         for (int i = 0; i < a_node.getChild().length; ++i) {
-            if (a_node.getChild()[i].getEntropyNode() != 0 && (notAllowedChosenIdxNew.size() < _attributes.size()))
+            if ((notAllowedChosenIdxNew.size() < _attributes.size()-1) && !a_node.getChild()[i].getIsLeaf())
                 makeTree(a_node.getChild()[i], notAllowedChosenIdxNew);
         }
     }
@@ -209,6 +219,7 @@ public class ID3 extends LearningAlgo {
      */
     public int bestAttribute(List<Object[]> dataSet, ArrayList<Integer> notAllowedChosenIdx) {
         double initialEntropy = entropy(dataSet);
+//        System.out.println("init ent"+initialEntropy+" "+dataSet.size());
         
         int selectedAttribute = -1;
         double selectedGain = 0;
@@ -236,10 +247,12 @@ public class ID3 extends LearningAlgo {
                     System.out.println(""); */
                 }
                 double gainThisAttribute = initialEntropy - totalEntropyReduction;
-                if (gainThisAttribute > selectedGain) {
+                //System.out.println("GAIN THISA ATTRIB "+gainThisAttribute);
+                if (gainThisAttribute >= selectedGain) {
                     selectedAttribute = i;
                     selectedGain = gainThisAttribute;
                 }
+                
 //                System.out.println("Gain(S,"+i+") = "+gainThisAttribute);
                 
             }
@@ -260,7 +273,6 @@ public class ID3 extends LearningAlgo {
             NominalDataAttribute thisAttr = (NominalDataAttribute)_attributes.get(node.getAttributeIndex());
             Object valueAttributeThisData = data[node.getAttributeIndex()];
             int idxValue = thisAttr.valueIndex((String)valueAttributeThisData);
-            
             node = node.getChild()[idxValue];
         }
         return node.getClassIdx();
