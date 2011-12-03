@@ -1,14 +1,11 @@
 
 package machinelearning.learningalgo;
 
-import com.sun.org.glassfish.external.statistics.Statistic;
-import com.sun.org.glassfish.external.statistics.impl.StatisticImpl;
+
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import machinelearning.data.DataAttribute;
 import machinelearning.data.NominalDataAttribute;
-import sun.security.util.BitArray;
 
 /**
  * @author vaio
@@ -22,7 +19,13 @@ public class KNN extends LearningAlgo {
     private int _limit;
     
     NominalDataAttribute tgtAttr;
- 
+    
+    /**
+     * Class Constructor
+     * @param attributes
+     * @param targetAttributeIdx
+     * @param K nearest neighbors number
+     */
     public KNN(List<DataAttribute> attributes, int targetAttributeIdx, int K) {
         super(attributes, targetAttributeIdx);
         this.K = K;
@@ -36,6 +39,7 @@ public class KNN extends LearningAlgo {
 
     @Override
     public void learn(List<Object[]> data) {
+        System.out.println("Copying learning data");
         _learningData = new int[data.size()][_attributes.size()];
         if (K > data.size())
             K = data.size();
@@ -59,7 +63,7 @@ public class KNN extends LearningAlgo {
     public float test(List<Object[]> data) {
         int sum = 0;
         
-        System.out.println("Copying data");
+        System.out.println("Copying test data");
         _testData = new int[data.size()][_attributes.size()];
         for (int i = 0; i < data.size(); ++i) {
             int k = 0;
@@ -71,7 +75,7 @@ public class KNN extends LearningAlgo {
             }
             _testData[i][k] = ((NominalDataAttribute) _attributes.get(_targetAttributeIdx)).valueIndex((String) data.get(i)[_targetAttributeIdx]);
         }
-        System.out.println("Testing data");
+        System.out.println("Testing");
         for(int k = 0; k < _testData.length; ++k) {
             if (getClassification(_testData[k]) == _testData[k][_limit])
                 ++sum;
@@ -80,6 +84,11 @@ public class KNN extends LearningAlgo {
         return (float) sum/_testData.length;
     }
     
+    /**
+     * Get distances from learning data and select the modus of their classification
+     * @param test the data to be tested
+     * @return class classification
+     */
     private int getClassification(int[] test) {
         int[] distances = new int[_learningData.length];
         for (int i = 0; i < _learningData.length; ++i) {
@@ -96,6 +105,12 @@ public class KNN extends LearningAlgo {
         return modus(candidates);
     }
     
+    /**
+     * Calculate distance between two data
+     * @param data learning data
+     * @param test testing data
+     * @return distance
+     */
     private int getDistance (int[] data, int[] test) {
         int out = 0;
             for (int i = 0; i < _limit; ++i) {
@@ -104,6 +119,11 @@ public class KNN extends LearningAlgo {
         return out;
     }
     
+    /**
+     * Get the modus from an array
+     * @param in the array
+     * @return modus value
+     */
     private int modus(int[] in) {
         int val [] = new int[((NominalDataAttribute)_attributes.get(_targetAttributeIdx)).values.length];
         Arrays.fill(val, 0);
@@ -115,7 +135,11 @@ public class KNN extends LearningAlgo {
         return indexMaximal(val);
     }
     
-    
+    /**
+     * Get the index of the maximal value of an array
+     * @param in the array
+     * @return maximal value's index
+     */
     private int indexMaximal(int[] in) {
         int out = 0;
         int min = in[0];
@@ -129,6 +153,11 @@ public class KNN extends LearningAlgo {
         return out;
     }
     
+    /**
+     * Get an array of index from descending order of an integer array
+     * @param x the array
+     * @return array of index
+     */
     private int[] indexBubbleSort(int[] x) {
         int out[] = new int[x.length];
         for (int i = 0; i < out.length; ++i) {
@@ -136,11 +165,9 @@ public class KNN extends LearningAlgo {
         }
         
         int n = x.length;
-        for (int pass = 1; pass < n; pass++) {  // count how many times
-            // This next loop becomes shorter and shorter
+        for (int pass = 1; pass < n; pass++) {
             for (int i = 0; i < n - pass; i++) {
                 if (x[i] < x[i + 1]) {
-                    // exchange elements
                     int temp = x[i];
                     x[i] = x[i + 1];
                     x[i + 1] = temp;
