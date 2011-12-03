@@ -29,7 +29,7 @@ public class KNN extends LearningAlgo {
     public KNN(List<DataAttribute> attributes, int targetAttributeIdx, int K) {
         super(attributes, targetAttributeIdx);
         this.K = K;
-        System.out.println(K);
+        System.out.println("Starting "+K+"-NN algorithm");
     }
 
     @Override
@@ -53,7 +53,8 @@ public class KNN extends LearningAlgo {
             }
             _learningData[i][k] = ((NominalDataAttribute) _attributes.get(_targetAttributeIdx)).valueIndex((String) data.get(i)[_targetAttributeIdx]);
         }
-        _limit = ((NominalDataAttribute) _attributes.get(_targetAttributeIdx)).values.length - 1;
+        _limit = _attributes.size() - 1;
+        //System.out.println(_limit);
     }
     
     @Override
@@ -75,8 +76,13 @@ public class KNN extends LearningAlgo {
             }
             _testData[i][k] = ((NominalDataAttribute) _attributes.get(_targetAttributeIdx)).valueIndex((String) data.get(i)[_targetAttributeIdx]);
         }
+        
+        //printArray(data.get(0));
+        //printArray(_testData[0]);
+        
         System.out.println("Testing");
         for(int k = 0; k < _testData.length; ++k) {
+            //System.out.println(_testData[k][_limit]);
             if (getClassification(_testData[k]) == _testData[k][_limit])
                 ++sum;
         }
@@ -96,12 +102,13 @@ public class KNN extends LearningAlgo {
         }
         int minIndex[] = indexBubbleSort(distances);
         
-        
         int candidates[] = new int[K];
         for (int j = 0; j < K; ++j) {
             candidates[j] = _learningData[minIndex[j]][_limit];
         }
-        
+        //printArray(candidates);
+        //int classed = modus(candidates);
+        //System.out.println(classed);
         return modus(candidates);
     }
     
@@ -112,10 +119,14 @@ public class KNN extends LearningAlgo {
      * @return distance
      */
     private int getDistance (int[] data, int[] test) {
+        //System.out.print("data ");
+        //printArray(data);
+        //printArray(test);
         int out = 0;
-            for (int i = 0; i < _limit; ++i) {
-                if (data[i] != test[i]) ++out;
-            }
+        for (int i = 0; i < _limit; ++i) {
+            if (data[i] != test[i]) ++out;
+        }
+        //System.out.println("distance " + out);
         return out;
     }
     
@@ -131,8 +142,9 @@ public class KNN extends LearningAlgo {
         for (int i = 0; i < K; ++i) {
             ++val[in[i]];
         }
-        
-        return indexMaximal(val);
+        int modus = indexMaximal(val);
+        //System.out.println("modus = "+ modus + " count= "+ val [modus]);
+        return modus;
     }
     
     /**
@@ -144,7 +156,7 @@ public class KNN extends LearningAlgo {
         int out = 0;
         int min = in[0];
         for (int i = 1; i < in.length; ++i) {
-            if (in[i] > min)
+            if (in[i] >= min)
             {
                 min = in[i];
                 out = i;
@@ -179,5 +191,12 @@ public class KNN extends LearningAlgo {
             }
         }
         return out;
+    }
+    
+    private void printArray(int[] in) {
+        for (int i = 0; i< in.length; ++i) {
+            System.out.print(in[i] + " ");
+        }
+        System.out.print('\n');
     }
 }
