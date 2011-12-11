@@ -39,7 +39,7 @@ public class Main {
                 
         
         //parameters
-        String filename = "2-carevaluation.txt";
+        String filename = "4-tictactoe.txt";
 
         //variables
         DataSet ds = new DataSet();
@@ -75,9 +75,9 @@ public class Main {
                 foldedDataSets.add(i, ds.data.subList(i*totalDataPerFold, totalData));
         }
         
-        for (int i=0; i< numFold; ++i)
-            System.out.println("Size folded data set ke-"+i+" = "+foldedDataSets.get(i).size());
-        
+//        for (int i=0; i< numFold; ++i)
+//            System.out.println("Size folded data set ke-"+i+" = "+foldedDataSets.get(i).size());
+//        
         //Fill learnDataSet and testDataSet
         for (int i=0; i < numFold; ++i) {
             testDataSets.add(i, foldedDataSets.get(i));
@@ -90,24 +90,30 @@ public class Main {
             learnDataSets.add(i, temp);
         }
         
-        for(LearningAlgo algo : algos) {
-            float totalAccuracy = 0;
-            for (int i=0 ; i < numFold; ++i) {
-                System.out.println("Algoritma : "+algo.getName() + " - Fold: " + i);
-                algo.learn(learnDataSets.get(i));
-                float res = algo.test(testDataSets.get(i));
-                totalAccuracy += res;
-            }
-            float averageAccuracy = totalAccuracy/(float)numFold;
-            System.out.println("Average Akurasi Algoritma: "+algo.getName()+" = "+averageAccuracy);
-        }
+//        for(LearningAlgo algo : algos) {
+//            float totalAccuracy = 0;
+//            for (int i=0 ; i < numFold; ++i) {
+////                System.out.println("Algoritma : "+algo.getName() + " - Fold: " + i);
+//                algo.learn(learnDataSets.get(i));
+//                float res = algo.test(testDataSets.get(i));
+//                totalAccuracy += res;
+//            }
+//            float averageAccuracy = totalAccuracy/(float)numFold;
+////            System.out.println("Average Akurasi Algoritma: "+algo.getName()+" = "+averageAccuracy);
+//        }
         
         ArrayList<Float> deltas = countDeltas(algos[0], algos[1], numFold, learnDataSets, testDataSets);
         for (int i = 0; i < deltas.size(); ++i) {
-            System.out.println("delta ke-"+i+" = "+deltas.get(i)*100+"%");
+            System.out.println("delta ke-"+i+" = "+deltas.get(i));
         }
         
+        Float deltamean = mean(deltas, numFold);
+        Float standarDev = standarDev(deltamean, deltas);
+        Float T = deltamean/standarDev;
         
+        System.out.println("Delta Mean: "+deltamean);
+        System.out.println("Standar Dev: "+standarDev);
+        System.out.println("T: "+T);
     }
     
     //Ngitung delta performa algo1-algo2
@@ -117,16 +123,42 @@ public class Main {
         for (int i = 0; i < numFold; ++i) {
             algo1.learn(learnDataSet.get(i));
             float resAlgo1 = algo1.test(testDataSet.get(i));
-            System.out.println("Acc algo1 ke-"+i+" = "+resAlgo1);
+//            System.out.println("Acc algo1 ke-"+i+" = "+resAlgo1);
             
             algo2.learn(learnDataSet.get(i));
             float resAlgo2 = algo2.test(testDataSet.get(i));
-            System.out.println("Acc algo2 ke-"+i+" = "+resAlgo2);
+//            System.out.println("Acc algo2 ke-"+i+" = "+resAlgo2);
             
             Float delta = resAlgo1-resAlgo2;
             result.add(delta);
-            System.out.println("");
+//            System.out.println("");
         }
+        
+        return result;
+    }
+    
+    //MEAN:
+    public static Float mean(ArrayList<Float> deltas, int numFold) {
+        Float deltamean = 0.0f;
+        for (int i = 0; i < deltas.size(); ++i) {
+            deltamean += deltas.get(i);
+        }
+        deltamean /= numFold;
+        
+        return deltamean;
+    }
+    
+    //STANDAR DEVIATION:
+    public static Float standarDev(Float mean, ArrayList<Float> deltas) {
+        Float sumKuadratSelisih = 0.0f;
+        for (int i = 0; i < deltas.size(); ++i) {
+            Float selisih = (deltas.get(i)-mean);
+            Float temp = selisih * selisih;
+            sumKuadratSelisih += temp;
+        }
+        
+        int k = deltas.size();
+        Float result = (Float)Math.sqrt(sumKuadratSelisih/(k*(k-1)));
         
         return result;
     }
