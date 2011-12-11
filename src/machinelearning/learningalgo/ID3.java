@@ -73,6 +73,16 @@ public class ID3 extends LearningAlgo {
         return correctRes / data.size();
     }
 
+    public int mostClassifiedClass(List<Object[]> data) {
+        int[] totalCategory = totalPerCategory(data, tgtAttr);
+        int selectedIdx = 0;
+        int selectedTotal = 0;
+        for (int i = 0; i < totalCategory.length; ++i){
+            if (totalCategory[i] > selectedTotal)
+                selectedIdx = i;
+        }
+        return selectedIdx;
+    }
     
     public double entropy(List<Object[]> dataSet) {
         if (dataSet.isEmpty()) 
@@ -170,6 +180,7 @@ public class ID3 extends LearningAlgo {
 //                    System.out.println("value:"+thisAttribute.values[i]);
                     
                     thisNode.setClassIdx(DEFAULT_CLASS);
+                    
                 }
                 childs[i] = thisNode;
             } else {
@@ -186,7 +197,9 @@ public class ID3 extends LearningAlgo {
                     thisNode.setDataSetNode(thisDataSet);
                     thisNode.setIsLeaf(Boolean.TRUE);
                     thisNode.setEntropyNode(entropyThisDataSet);
-                    thisNode.setClassIdx(DEFAULT_CLASS);
+                    //thisNode.setClassIdx(DEFAULT_CLASS);
+                    thisNode.setClassIdx(mostClassifiedClass(thisDataSet));
+                    System.out.println("hai");
                     childs[i] = thisNode;
                 }
             }
