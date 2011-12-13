@@ -149,7 +149,7 @@ public class KNN extends LearningAlgo {
     }
     
     /**
-     * Get an array of index from descending order of an integer array
+     * Get an array of index from ascending order of an integer array
      * @param x the array
      * @return array of index
      */
