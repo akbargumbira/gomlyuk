@@ -166,7 +166,7 @@ public class KNN extends LearningAlgo {
         int n = x.length;
         for (int pass = 1; pass < n; pass++) {
             for (int i = 0; i < n - pass; i++) {
-                if (x[i] < x[i + 1]) {
+                if (x[i] > x[i + 1]) {
                     int temp = x[i];
                     x[i] = x[i + 1];
                     x[i + 1] = temp;
