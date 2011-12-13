@@ -37,7 +37,7 @@ public class Main {
         dataSetFile.put("5-zoo tes.txt",16);        
         
         //parameters
-        String filename = "1-balancescale.txt";
+        String filename = "5-zoo.txt";
 
         //variables
         DataSet ds = new DataSet();
