@@ -34,10 +34,10 @@ public class Main {
         dataSetFile.put("3-kingrookvskingpawn.txt",36);
         dataSetFile.put("4-tictactoe.txt",9);
         dataSetFile.put("5-zoo.txt",17);
-                
+        dataSetFile.put("5-zoo tes.txt",16);        
         
         //parameters
-        String filename = "5-zoo.txt";
+        String filename = "1-balancescale.txt";
 
         //variables
         DataSet ds = new DataSet();
@@ -51,7 +51,7 @@ public class Main {
         LearningAlgo[] algos = new LearningAlgo[] {
           new NaiveBayes(ds.attributes, dataSetFile.get(filename), 0.4f),
           new ID3(ds.attributes, dataSetFile.get(filename)), 
-          new KNN(ds.attributes, dataSetFile.get(filename),5)
+          new KNN(ds.attributes, dataSetFile.get(filename),3)
         };
         
 
