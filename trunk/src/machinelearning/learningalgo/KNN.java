@@ -29,7 +29,6 @@ public class KNN extends LearningAlgo {
     public KNN(List<DataAttribute> attributes, int targetAttributeIdx, int K) {
         super(attributes, targetAttributeIdx);
         this.K = K;
-        System.out.println("Starting "+K+"-NN algorithm");
     }
 
     @Override
@@ -39,7 +38,6 @@ public class KNN extends LearningAlgo {
 
     @Override
     public void learn(List<Object[]> data) {
-        System.out.println("Copying learning data");
         _learningData = new int[data.size()][_attributes.size()];
         if (K > data.size())
             K = data.size();
@@ -63,7 +61,6 @@ public class KNN extends LearningAlgo {
     public float test(List<Object[]> data) {
         int sum = 0;
         
-        System.out.println("Copying test data");
         _testData = new int[data.size()][_attributes.size()];
         for (int i = 0; i < data.size(); ++i) {
             int k = 0;
@@ -76,7 +73,6 @@ public class KNN extends LearningAlgo {
             _testData[i][k] = ((NominalDataAttribute) _attributes.get(_targetAttributeIdx)).valueIndex((String) data.get(i)[_targetAttributeIdx]);
         }
         
-        //System.out.println("Testing");
         for(int k = 0; k < _testData.length; ++k) {
             if (getClassification(_testData[k]) == _testData[k][_limit])
                 ++sum;
