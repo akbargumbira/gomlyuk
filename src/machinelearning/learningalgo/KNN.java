@@ -82,7 +82,7 @@ public class KNN extends LearningAlgo {
     }
     
     /**
-     * Get distances from learning data and select the modus of their classification
+     * Get distances from learning data and select the modus
      * @param test the data to be tested
      * @return class classification
      */
@@ -101,7 +101,7 @@ public class KNN extends LearningAlgo {
     }
     
     /**
-     * Calculate distance between two data
+     * Calculate distance between data
      * @param data learning data
      * @param test testing data
      * @return distance
