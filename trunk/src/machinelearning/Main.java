@@ -34,10 +34,9 @@ public class Main {
         dataSetFile.put("3-kingrookvskingpawn.txt",36);
         dataSetFile.put("4-tictactoe.txt",9);
         dataSetFile.put("5-zoo.txt",17);
-        dataSetFile.put("5-zoo tes.txt",16);        
         
         //parameters
-        String filename = "5-zoo.txt";
+        String filename = "2-carevaluation.txt";
 
         //variables
         DataSet ds = new DataSet();
@@ -155,6 +154,14 @@ public class Main {
             System.out.println("");
         }
         System.out.println("------------------------------------------------------------------------------------------");
+        System.out.print("\tMEAN \t | ");
+        for (int j = 0; j < algos.length; j++) {
+                System.out.print("\t");
+                System.out.format("%.6f",mean(akurasiAllAlgo.get(j), numFold)) ;
+                System.out.print("\t |");
+        }
+        System.out.println("");
+        System.out.println("------------------------------------------------------------------------------------------");
     }
     
     
@@ -166,7 +173,7 @@ public class Main {
         ArrayList<Float> result = new ArrayList<Float>();
         
         for (int i = 0; i < numFold; ++i) {      
-            Float delta = accAlgo1.get(i) - accAlgo2.get(i) ;
+            Float delta = Math.abs(accAlgo1.get(i) - accAlgo2.get(i)) ;
             result.add(delta);
         }
         
