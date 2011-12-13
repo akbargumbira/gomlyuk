@@ -31,13 +31,13 @@ public class Main {
         Hashtable<String, Integer> dataSetFile = new Hashtable<String, Integer> ();
         dataSetFile.put("1-balancescale.txt",0);
         dataSetFile.put("2-carevaluation.txt",6);
-        dataSetFile.put("3-nursery.txt",8);
+        dataSetFile.put("3-kingrookvskingpawn.txt",36);
         dataSetFile.put("4-tictactoe.txt",9);
         dataSetFile.put("5-zoo.txt",17);
                 
         
         //parameters
-        String filename = "4-tictactoe.txt";
+        String filename = "5-zoo.txt";
 
         //variables
         DataSet ds = new DataSet();
@@ -51,7 +51,7 @@ public class Main {
         LearningAlgo[] algos = new LearningAlgo[] {
           new NaiveBayes(ds.attributes, dataSetFile.get(filename), 0.4f),
           new ID3(ds.attributes, dataSetFile.get(filename)), 
-          new KNN(ds.attributes, dataSetFile.get(filename), 10)
+          new KNN(ds.attributes, dataSetFile.get(filename),5)
         };
         
 
