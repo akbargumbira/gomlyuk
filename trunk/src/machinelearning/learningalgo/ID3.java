@@ -34,11 +34,6 @@ public class ID3 extends LearningAlgo {
     @Override
     public void learn(List<Object[]> data) {
          tgtAttr = (NominalDataAttribute) _attributes.get(_targetAttributeIdx);
-         //Tes ngitung entropy:
-         //double tes = entropy(data);
-         
-         //Tes milih bestattribute:
-         //int tes = bestAttribute(data);
          
          learningModel = new Node();
          learningModel.setDataSetNode(data);
@@ -49,14 +44,6 @@ public class ID3 extends LearningAlgo {
              learningModel.setIsLeaf(Boolean.TRUE);
          ArrayList<Integer> notAllowedChosenIdx = new ArrayList<Integer>();
          makeTree(learningModel, notAllowedChosenIdx);
-//         printTree(learningModel);
-         
-         /* Tes klasifikasi :
-          * Object[] dataTes = {"Rain","Hot","High","Weak","No"};
-         int classIdx = classify(dataTes);
-         System.out.println("Classified as: "+tgtAttr.values[classIdx]);
-          * 
-          */
     }
     
     @Override
@@ -90,11 +77,6 @@ public class ID3 extends LearningAlgo {
        
         int[] totalCategory = totalPerCategory(dataSet, tgtAttr); 
         
-        //CheckPoint
-//        for (int i=0;i<totalCategory.length;++i) {
-//            System.out.println("Jumlah kategori "+tgtAttr.values[i]+" = "+totalCategory[i]);
-//        }
-        
         double entropyRes = 0;
         for (int i = 0; i < totalCategory.length; ++i){
             double p = (float)totalCategory[i]/dataSet.size();
@@ -103,7 +85,6 @@ public class ID3 extends LearningAlgo {
                 temp = (-1*p) * log2(p);
             entropyRes += temp;
         }
-//        System.out.println("Entropy:"+entropyRes);
         return entropyRes;
     }
     
@@ -145,10 +126,8 @@ public class ID3 extends LearningAlgo {
      * Make Tree, buat model learning
      */
     public void makeTree(Node a_node, ArrayList<Integer> notAllowedChosenIdx) {
-//        System.out.println("NotAllowedChosenIdx " +notAllowedChosenIdx.toString());
         int bestAttribute = bestAttribute(a_node.getDataSetNode(), notAllowedChosenIdx);
         
-//        System.out.println("Best Attribute Chosen : "+bestAttribute);
         a_node.setAttributeIndex(bestAttribute);
         
         //Perbaharui notAllowedChosenIdx:
@@ -175,12 +154,8 @@ public class ID3 extends LearningAlgo {
                 thisNode.setIsLeaf(Boolean.TRUE);
                 if (!thisDataSet.isEmpty())
                     thisNode.setClassIdx(tgtAttr.valueIndex((String)thisDataSet.get(0)[_targetAttributeIdx]));
-                else {
-//                    System.out.println("Class GEJE karena attribute ini gede Gainnya tapi value ini gak ada data trainingnya");
-//                    System.out.println("value:"+thisAttribute.values[i]);
-                    
+                else {//("Class GEJE karena attribute ini gede Gainnya tapi value ini gak ada data trainingnya");
                     thisNode.setClassIdx(DEFAULT_CLASS);
-                    
                 }
                 childs[i] = thisNode;
             } else {
@@ -197,7 +172,6 @@ public class ID3 extends LearningAlgo {
                     thisNode.setDataSetNode(thisDataSet);
                     thisNode.setIsLeaf(Boolean.TRUE);
                     thisNode.setEntropyNode(entropyThisDataSet);
-                    //thisNode.setClassIdx(DEFAULT_CLASS);
                     thisNode.setClassIdx(mostClassifiedClass(thisDataSet));
                     System.out.println("hai");
                     childs[i] = thisNode;
@@ -232,7 +206,6 @@ public class ID3 extends LearningAlgo {
      */
     public int bestAttribute(List<Object[]> dataSet, ArrayList<Integer> notAllowedChosenIdx) {
         double initialEntropy = entropy(dataSet);
-//        System.out.println("init ent"+initialEntropy+" "+dataSet.size());
         
         int selectedAttribute = -1;
         double selectedGain = 0;
@@ -248,29 +221,15 @@ public class ID3 extends LearningAlgo {
                     List<Object[]> thisDataSet = selectDataSet(dataSet, i, thisAttrib.values[j]);
                     double entropyThisValue = entropy(thisDataSet);
                     double probThisValue = (double)thisDataSet.size() / dataSet.size();
-                    totalEntropyReduction += probThisValue*entropyThisValue;
-       
-                    /* CHECKPOINT
-                     * int[] thisTotalCategory = totalPerCategory(thisDataSet, tgtAttr);
-                    
-                    System.out.println("Untuk Attribut = "+i+" Value = "+thisAttrib.values[j]);
-                    for (int k = 0; k < thisTotalCategory.length; ++k) {
-                      System.out.println("Jumlah kategori "+tgtAttr.values[k]+" = "+thisTotalCategory[k]);
-                    } 
-                    System.out.println(""); */
+                    totalEntropyReduction += probThisValue*entropyThisValue;       
                 }
                 double gainThisAttribute = initialEntropy - totalEntropyReduction;
-                //System.out.println("GAIN THISA ATTRIB "+gainThisAttribute);
                 if (gainThisAttribute >= selectedGain) {
                     selectedAttribute = i;
                     selectedGain = gainThisAttribute;
                 }
-                
-//                System.out.println("Gain(S,"+i+") = "+gainThisAttribute);
-                
             }
         }
-//        System.out.println("Best Gain: Attribute ke-"+selectedAttribute+", Gain = "+selectedGain);
         
         return selectedAttribute;
     }
